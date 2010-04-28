@@ -1,0 +1,37 @@
+#name : unit test header
+# --
+/*
+ * Copyright (C) Silverbrook Research Pty. Ltd. 2008.
+ * All rights reserved.
+ */
+
+#ifndef ${1:SPIKE__`(ga-create-define-name (buffer-file-name))`}
+#define $1
+
+#if SPIKE_HAS_PRAGMA_ONCE
+    #pragma once
+#endif
+
+#include <SpikeCore/Tests/CppUnit.h>
+
+namespace Spike
+{
+namespace $2
+{
+
+class ${3:`(ga-class-from-file-name (buffer-file-name))`}
+    : public CppUnit::TestCase
+{
+public:
+    void
+    ${4:test}();$0
+
+    CPPUNIT_TEST_SUITE($3);
+        CPPUNIT_TEST($4);
+    CPPUNIT_TEST_SUITE_END();
+};
+
+} // namespace $2
+} // namespace Spike
+
+#endif

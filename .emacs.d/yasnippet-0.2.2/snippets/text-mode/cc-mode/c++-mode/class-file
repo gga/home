@@ -1,0 +1,16 @@
+#name : class file skeleton
+# --
+/*
+ * Copyright (C) Silverbrook Research Pty. Ltd. 2008.
+ * All rights reserved.
+ */
+
+#include <${1:`(substring (substring (buffer-file-name) (length (ga-source-root))) 0 -3)`}h>
+
+namespace Spike
+{
+namespace $0
+{
+
+}
+}

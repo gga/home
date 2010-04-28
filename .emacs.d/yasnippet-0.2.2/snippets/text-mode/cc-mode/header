@@ -1,0 +1,17 @@
+#name : header
+# --
+/*
+ * Copyright (C) Silverbrook Research Pty. Ltd. 2008.
+ * All rights reserved.
+ */
+
+#ifndef ${1:SPIKE__`(ga-create-define-name (buffer-file-name))`}
+#define $1
+
+#if SPIKE_HAS_PRAGMA_ONCE
+    #pragma once
+#endif
+
+$0
+
+#endif

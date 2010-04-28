@@ -1,0 +1,16 @@
+;; Emacs-W3 HTTP cookies file
+;; Automatically generated file!!! DO NOT EDIT!!!
+
+(setq url-cookie-storage
+ '((".openweblog.com"
+  [cookie "ljuniq" "93CgGc5x2w07Tt3:1204599306" "03-May-2008 02:55:06.00 GMT" "/" ".openweblog.com" nil])
+ ("www.openweblog.com"
+  [cookie "ljuniq" "93CgGc5x2w07Tt3:1204599306" "03-May-2008 02:55:06.00 GMT" "/" "www.openweblog.com" nil]))
+)
+(setq url-cookie-secure-storage
+ 'nil)
+
+;; Local Variables:
+;; version-control: never
+;; no-byte-compile: t
+;; End:

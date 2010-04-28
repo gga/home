@@ -1,0 +1,5 @@
+[user]
+	name = Giles Alexander
+	email = giles.alexander@gmail.com
+[core]
+	excludesfile = /Users/giles/.gitexcludes
