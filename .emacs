@@ -31,8 +31,6 @@
 (load-library "inf-ruby")
 (load-library "rubydb3x")
 (load "~/.emacs.d/nxhtml/autostart.el")
-;; Load the p4 integration library
-(load-library "~/.emacs.d/p4.el")
 ;; Load a simple wiki library
 (load-library "~/.emacs.d/simple-wiki.el")
 ;; Load flyspell
@@ -111,7 +109,6 @@
  '(cua-mode t nil (cua-base))
  '(scroll-bar-mode nil)
  '(transient-mark-mode t)
- '(weblogger-config-alist (quote (("default" ("user" . "galexander") ("server-url" . "http://np4.silverbrookresearch.com/blogs/giles/xmlrpc.php") ("weblog" . "3")))))
  '(whitespace-check-leading-whitespace nil)
  '(whitespace-check-trailing-whitespace nil)
  '(whitespace-global-mode t)
