@@ -1,0 +1,5 @@
+[paths]
+default = http://hg.nbn.tw:81/repo
+
+[ui]
+username = Giles Alexander <giles.alexander@thoughtworks.com>
