@@ -38,6 +38,7 @@
 ;; Load nXml mode
 ;; (load "rng-auto.el")
 
+(require 'cl)
 (require 'dired)
 (require 'uniquify)
 (require 'color-theme)
@@ -48,6 +49,7 @@
 (require 'weblogger)
 (require 'parenface)
 (require 'yasnippet)
+(require 'todochiku)
 ;; (require 'bbdb)
 
 (autoload 'simple-confluence-mode "simple-wiki")
@@ -56,7 +58,7 @@
 (color-theme-initialize)
 (color-theme-charcoal-black)
 
-(setq user-mail-address "giles.alexander@silverbrookresearch.com")
+(setq user-mail-address "giles.alexander@thoughtworks.com")
 
 (defun turn-on-flyspell ()
   "Turns on flyspell, guaranteed."
@@ -111,6 +113,7 @@
  '(transient-mark-mode t)
  '(whitespace-check-leading-whitespace nil)
  '(whitespace-check-trailing-whitespace nil)
+ '(whitespace-check-buffer-trailing nil)
  '(whitespace-global-mode t)
  '(windmove-wrap-around t))
 (winner-mode 1)
@@ -307,7 +310,8 @@ one extra step. Works with: arglist-cont."
 
 ;; Ruby mode configuration
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Rakefile\\'" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 (defun ga-ruby-mode-hook ()
   (inf-ruby-keys)
