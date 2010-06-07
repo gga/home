@@ -50,6 +50,7 @@
 (require 'parenface)
 (require 'yasnippet)
 (require 'todochiku)
+(require 'puppet-mode)
 ;; (require 'bbdb)
 
 (autoload 'simple-confluence-mode "simple-wiki")
@@ -336,6 +337,9 @@ one extra step. Works with: arglist-cont."
  nxml-child-indent 2)
 (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo))
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
+
+;; Puppet mode configuration
+(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
 
 ;; Run the emacs in-process server to accept remote-edit requests
 (server-start)
