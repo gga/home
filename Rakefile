@@ -2,6 +2,7 @@ FILES = ['.emacs', '.gitconfig', '.gitexcludes', '.zshenv', '.zshrc']
 DIRS = ['.emacs.d', '.zsh.d', '.hg']
 HOME = File.expand_path("~/")
 
+FILES.each { |f| file "#{HOME}/#{f}" }
 FILES.each { |f| file f => "#{HOME}/#{f}" }
 DIRS.each { |d| directory d }
 
