@@ -4,3 +4,6 @@
 [submodule ".emacs.d/clojure-mode"]
 	path = .emacs.d/clojure-mode
 	url = git://github.com/technomancy/clojure-mode.git
+[submodule ".emacs.d/slime"]
+	path = .emacs.d/slime
+	url = git://github.com/nablaone/slime.git
