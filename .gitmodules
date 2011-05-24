@@ -1,3 +1,6 @@
 [submodule ".emacs.d/feature-mode"]
 	path = .emacs.d/feature-mode
 	url = https://github.com/michaelklishin/cucumber.el.git
+[submodule ".emacs.d/clojure-mode"]
+	path = .emacs.d/clojure-mode
+	url = git://github.com/technomancy/clojure-mode.git
