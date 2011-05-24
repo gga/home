@@ -38,8 +38,6 @@
 (load "~/.emacs.d/nxhtml/autostart.el")
 ;; Load flyspell
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
-;; Load nXml mode
-;; (load "rng-auto.el")
 ;; Load js2 mode for improved javascript
 (autoload 'js2-mode "js2" nil t)
 
@@ -53,6 +51,7 @@
 (require 'cc-mode)
 (require 'scala-mode-auto)
 (require 'ruby-mode)
+(require 'haml-mode)
 (require 'parenface)
 (require 'yasnippet)
 (require 'todochiku)
