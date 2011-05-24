@@ -3,14 +3,14 @@
 ;; Author: Lennart Borgman (lennart O borgman A gmail O com)
 ;; Created: 2008-09-02T11:46:03+0200 Tue
 ;; Version:
-;; Last-Updated:
+;; Last-Updated: 2009-01-06 Tue
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   Cannot open load file: ert2.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -44,12 +44,30 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+(eval-when-compile
+  (let* ((this-file (or load-file-name
+                        (when (boundp 'bytecomp-filename) bytecomp-filename)
+                        buffer-file-name))
+         (this-dir (file-name-directory this-file))
+         (load-path (cons this-dir load-path)))
+    (require 'ert)))
+
 (let* ((this-dir
         (file-name-directory (if load-file-name load-file-name buffer-file-name)))
-       (load-path (copy-list load-path)))
+       ;;(load-path (copy-list load-path)))
+       (load-path (copy-sequence load-path)))
   (add-to-list 'load-path this-dir)
   (require 'ert))
 
+
+(defvar ert-temp-test-buffer-test nil)
+(make-variable-buffer-local 'ert-temp-test-buffer-test)
+(put 'ert-temp-test-buffer-test 'permanent-local t)
+
+(defvar ert-temp-test-buffer-file nil)
+(make-variable-buffer-local 'ert-temp-test-buffer-file)
+(put 'ert-temp-test-buffer-file 'permanent-local t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Test buffers
@@ -104,12 +122,6 @@
   "Helpers for those buffers ..."
   )
 (put 'ert-temp-test-buffer-minor-mode 'permanent-local t)
-(defvar ert-temp-test-buffer-test nil)
-(make-variable-buffer-local 'ert-temp-test-buffer-test)
-(put 'ert-temp-test-buffer-test 'permanent-local t)
-(defvar ert-temp-test-buffer-file nil)
-(make-variable-buffer-local 'ert-temp-test-buffer-file)
-(put 'ert-temp-test-buffer-file 'permanent-local t)
 
 ;; Fix-me: doc
 (defvar ert-test-files-root nil)
@@ -128,7 +140,7 @@ To access these temporary test buffers use
 - `ert-list-temp-test-buffers': list them
 - `ert-kill-temp-test-buffers': delete them"
   (declare (indent 1) (debug t))
-  (let ((file-name (gensym "file-name-")))
+  (let ((file-name (make-symbol "file-name-")))
     `(let* ((,file-name (ert-get-test-file-name ,file-name-form))
             (mode-line-buffer-identification (list (propertize "%b" 'face 'highlight)))
             ;; Give the buffer a name that allows us to switch to it
@@ -190,10 +202,12 @@ Return the value of calling the command, ie
 
 Run the hook `ert-simulate-command-post-hook' at the very end."
 
+  (message "command=%s" command)
   (ert-should (listp command))
   (ert-should (commandp (car command)))
   (ert-should (not unread-command-events))
-  (let (return-value)
+  (let (return-value
+        (font-lock-mode t))
     ;; For the order of things here see command_loop_1 in keyboard.c
     ;;
     ;; The command loop will reset the command related variables so
@@ -207,6 +221,7 @@ Run the hook `ert-simulate-command-post-hook' at the very end."
                            this-original-command))
     (run-hooks 'pre-command-hook)
     (setq return-value (apply (car command) (cdr command))) ;; <-----
+    (message "post-command-hook=%s" post-command-hook)
     (run-hooks 'post-command-hook)
     (when deferred-action-list
       (run-hooks 'deferred_action_function))
@@ -214,10 +229,15 @@ Run the hook `ert-simulate-command-post-hook' at the very end."
     (setq last-repeatable-command real-last-command)
     (setq last-command this-command)
     (when (and deactivate-mark transient-mark-mode) (deactivate-mark))
+    ;;(message "ert-simulate-command.before idle-timers, point=%s" (point))
     (when run-idle-timers
-      (dolist (timer (copy-list timer-idle-list))
-        (timer-event-handler timer))
+      ;;(dolist (timer (copy-list timer-idle-list))
+      (dolist (timer (copy-sequence timer-idle-list))
+        (timer-event-handler timer)
+        ;;(message "   after timer=%s, point=%s" timer (point))
+        )
       (redisplay t))
+    ;;(message "ert-simulate-command.after  idle-timers, point=%s" (point))
     (when ert-simulate-command-delay
       ;; Show user
       ;;(message "After M-x %s" command)

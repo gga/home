@@ -1,8 +1,8 @@
 ;;; viper-tut.el --- Viper tutorial
 ;;
 ;; Author: Lennart Borgman
-;; Created: Fri Sep 08 16:55:42 2006
-;; Version: 0.1
+;; Created: Fri Sep 08 2006
+(defconst viper-tut:version "0.2") ;;Version: 0.2
 ;; Last-Updated:
 ;; Keywords:
 ;; Compatibility: Emacs 22
@@ -44,8 +44,20 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'mumamo))
+(eval-when-compile (require 'ourcomments-util))
 (require 'tutorial)
 (require 'cus-edit)
+
+(defface viper-tut-header-top
+  '((t (:foreground "black" :background "goldenrod3")))
+  "Face for headers."
+  :group 'web-vcs)
+
+(defface viper-tut-header
+  '((t (:foreground "black" :background "goldenrod2" :height 1.8)))
+  "Face for headers."
+  :group 'web-vcs)
 
 (defvar tutorial--tab-map
   (let ((map (make-sparse-keymap)))
@@ -55,92 +67,7 @@
     map)
   "Keymap that allows tabbing between buttons.")
 
-(defun viper-tut--detailed-help (button)
-  "Give detailed help about changed keys."
-  (with-output-to-temp-buffer (help-buffer)
-    (help-setup-xref (list #'viper-tut--detailed-help button)
-                     (interactive-p))
-    (with-current-buffer (help-buffer)
-      (let* ((tutorial-buffer  (button-get button 'tutorial-buffer))
-             ;;(tutorial-arg     (button-get button 'tutorial-arg))
-             (explain-key-desc (button-get button 'explain-key-desc))
-             (part             (button-get button 'part))
-             (changed-keys (with-current-buffer tutorial-buffer
-                             (let ((tutorial--lang "English"))
-                               (tutorial--find-changed-keys
-                                (if (= part viper-tut--emacs-part)
-                                    tutorial--default-keys
-                                  viper-tut--default-keys))))))
-        (when changed-keys
-          (insert
-           "The following key bindings used in the tutorial had been changed\n"
-           (if (= part viper-tut--emacs-part)
-               "from Emacs default in the "
-             "from Viper default in the ")
-           (buffer-name tutorial-buffer) " buffer:\n\n" )
-          (let ((frm "   %-9s %-27s %-11s %s\n"))
-            (insert (format frm "Key" "Standard Binding" "Is Now On" "Remark")))
-          (dolist (tk changed-keys)
-            (let* ((def-fun     (nth 1 tk))
-                   (key         (nth 0 tk))
-                   (def-fun-txt (nth 2 tk))
-                   (where       (nth 3 tk))
-                   (remark      (nth 4 tk))
-                   (rem-fun (command-remapping def-fun))
-                   (key-txt (key-description key))
-                   (key-fun (with-current-buffer tutorial-buffer (key-binding key)))
-                   tot-len)
-              (unless (eq def-fun key-fun)
-                ;; Insert key binding description:
-                (when (string= key-txt explain-key-desc)
-                  (put-text-property 0 (length key-txt) 'face '(:background "yellow") key-txt))
-                (insert "   " key-txt " ")
-                (setq tot-len (length key-txt))
-                (when (> 9 tot-len)
-                  (insert (make-string (- 9 tot-len) ? ))
-                  (setq tot-len 9))
-                ;; Insert a link describing the old binding:
-                (insert-button def-fun-txt
-                               'value def-fun
-                               'action
-                               (lambda(button) (interactive)
-                                 (describe-function
-                                  (button-get button 'value)))
-                               'follow-link t)
-                (setq tot-len (+ tot-len (length def-fun-txt)))
-                (when (> 36 tot-len)
-                  (insert (make-string (- 36 tot-len) ? )))
-                (when (listp where)
-                  (setq where "list"))
-                ;; Tell where the old binding is now:
-                (insert (format " %-11s " where))
-                ;; Insert a link with more information, for example
-                ;; current binding and keymap or information about
-                ;; cua-mode replacements:
-                (insert-button (car remark)
-                               'action
-                               (lambda(b) (interactive)
-                                 (let ((value (button-get b 'value)))
-                                   (tutorial--describe-nonstandard-key value)))
-                               'value (cdr remark)
-                               'follow-link t)
-                (insert "\n")))))
-
-
-
-        (insert "
-It is legitimate to change key bindings, but changed bindings do not
-correspond to what the tutorial says.  (See also " )
-        (insert-button "Key Binding Conventions"
-                       'action
-                       (lambda(button) (interactive)
-                         (info
-                          "(elisp) Key Binding Conventions")
-                         (message "Type C-x 0 to close the new window"))
-                       'follow-link t)
-        (insert ".)\n\n")
-        (print-help-return-message)))))
-
+(defconst viper-tut--emacs-part 6)
 
 (defconst viper-tut--default-keys
   `(
@@ -393,7 +320,7 @@ correspond to what the tutorial says.  (See also " )
     (viper-info-on-file [?\C-c ?\C-g])
     ;; ^L	Refresh screen
     ;;(recenter [(control ?l)])
-    (recenter [?\C-l])
+    (recenter-top-bottom [?\C-l])
 
     ;; !}fmt	Format the paragraph, joining and filling lines to
     ;; !}sort	Sort lines of a paragraph alphabetically
@@ -405,6 +332,92 @@ correspond to what the tutorial says.  (See also " )
     (viper-command-argument [?<])
 
     ))
+
+(defun viper-tut--detailed-help (button)
+  "Give detailed help about changed keys."
+  (with-output-to-temp-buffer (help-buffer)
+    (help-setup-xref (list #'viper-tut--detailed-help button)
+                     (interactive-p))
+    (with-current-buffer (help-buffer)
+      (let* ((tutorial-buffer  (button-get button 'tutorial-buffer))
+             ;;(tutorial-arg     (button-get button 'tutorial-arg))
+             (explain-key-desc (button-get button 'explain-key-desc))
+             (part             (button-get button 'part))
+             (changed-keys (with-current-buffer tutorial-buffer
+                             (let ((tutorial--lang "English"))
+                               (tutorial--find-changed-keys
+                                (if (= part viper-tut--emacs-part)
+                                    tutorial--default-keys
+                                  viper-tut--default-keys))))))
+        (when changed-keys
+          (insert
+           "The following key bindings used in the tutorial had been changed\n"
+           (if (= part viper-tut--emacs-part)
+               "from Emacs default in the "
+             "from Viper default in the ")
+           (buffer-name tutorial-buffer) " buffer:\n\n" )
+          (let ((frm "   %-9s %-27s %-11s %s\n"))
+            (insert (format frm "Key" "Standard Binding" "Is Now On" "Remark")))
+          (dolist (tk changed-keys)
+            (let* ((def-fun     (nth 1 tk))
+                   (key         (nth 0 tk))
+                   (def-fun-txt (nth 2 tk))
+                   (where       (nth 3 tk))
+                   (remark      (nth 4 tk))
+                   (rem-fun (command-remapping def-fun))
+                   (key-txt (key-description key))
+                   (key-fun (with-current-buffer tutorial-buffer (key-binding key)))
+                   tot-len)
+              (unless (eq def-fun key-fun)
+                ;; Insert key binding description:
+                (when (string= key-txt explain-key-desc)
+                  (put-text-property 0 (length key-txt) 'face '(:background "yellow") key-txt))
+                (insert "   " key-txt " ")
+                (setq tot-len (length key-txt))
+                (when (> 9 tot-len)
+                  (insert (make-string (- 9 tot-len) ? ))
+                  (setq tot-len 9))
+                ;; Insert a link describing the old binding:
+                (insert-button def-fun-txt
+                               'help-echo (format "Describe function '%s" def-fun-txt)
+                               'action `(lambda(button) (interactive)
+                                         (describe-function ',def-fun))
+                               'follow-link t)
+                (setq tot-len (+ tot-len (length def-fun-txt)))
+                (when (> 36 tot-len)
+                  (insert (make-string (- 36 tot-len) ? )))
+                (when (listp where)
+                  (setq where "list"))
+                ;; Tell where the old binding is now:
+                (insert (format " %-11s " where))
+                ;; Insert a link with more information, for example
+                ;; current binding and keymap or information about
+                ;; cua-mode replacements:
+                (insert-button (car remark)
+                               'help-echo "Give more information about the changed key binding"
+                               'action `(lambda(b) (interactive)
+                                          (let ((value ,(cdr remark)))
+                                            ;; Fix-me:
+                                            (tutorial--describe-nonstandard-key value)))
+                               'follow-link t)
+                (insert "\n")))))
+
+
+
+        (insert "
+It is legitimate to change key bindings, but changed bindings do not
+correspond to what the tutorial says.
+\(See also " )
+        (insert-button "Key Binding Conventions"
+                       'action
+                       (lambda(button) (interactive)
+                         (info
+                          "(elisp) Key Binding Conventions")
+                         (message "Type C-x 0 to close the new window"))
+                       'follow-link t)
+        (insert ".)\n\n")
+        (with-no-warnings (print-help-return-message))))))
+
 
 (defvar viper-tut--part nil
   "Viper tutorial part.")
@@ -423,7 +436,7 @@ correspond to what the tutorial says.  (See also " )
 (defun viper-tut--save-tutorial ()
   "Save the tutorial buffer.
 This saves the part of the tutorial before and after the area
-showing changed keys.  It also saves the point position and the
+showing changed keys.  It also saves point position and the
 position where the display of changed bindings was inserted.
 
 Do not save anything if not `viper-mode' is enabled in the
@@ -446,15 +459,13 @@ tutorial buffer."
     (6 "(no file)" "Emacs tutorial for Viper Users")
     ))
 
-(defconst viper-tut--emacs-part 6)
-
 (defcustom viper-tut-directory
   (let* ((this-file (if load-file-name
                         load-file-name
                       (buffer-file-name)))
          (this-dir (file-name-directory this-file)))
     (file-name-as-directory
-     (expand-file-name "viper-tut" this-dir)))
+     (expand-file-name "../etc/viper-tut" this-dir)))
   "Directory where the Viper tutorial files lives."
   :type 'directory
   :group 'viper)
@@ -466,10 +477,18 @@ tutorial buffer."
             (when (= part (nth 0 rec))
               (setq tut-file
                     (if (= part viper-tut--emacs-part)
-                        (expand-file-name (get-language-info "English" 'tutorial) data-directory)
+                        (let ((tf (expand-file-name (get-language-info "English" 'tutorial) tutorial-directory)))
+                          (unless (file-exists-p tf)
+                            (error "Can't find the English tutorial file for Emacs: %S" tf))
+                          tf)
                       (expand-file-name (nth 1 rec) viper-tut-directory)))))
           viper-tut--parts)
     tut-file))
+
+(defun viper-tut-viper-is-on ()
+  ;;(message "viper-tut-viper-is-on, vms=%s, cb=%s" (boundp 'viper-mode-string) (current-buffer))
+  ;;(boundp 'viper-mode-string)
+  (boundp 'viper-current-state))
 
 (defun viper-tut--display-changes (changed-keys part)
   "Display changes to some default Viper key bindings.
@@ -480,15 +499,14 @@ tutorial buffer with some explanatory links.
 CHANGED-KEYS should be a list in the format returned by
 `tutorial--find-changed-keys'."
   (when (or changed-keys
-            (not viper-is-on))
+            (viper-tut-viper-is-on))
     ;; Need the custom button face for viper buttons:
     ;;(when (and (boundp 'viper-mode) viper-mode) (require 'cus-edit))
     (goto-char tutorial--point-before-chkeys)
     (let* ((start (point))
            end
-           (viper-is-on (boundp 'viper-mode-string))
            (head
-            (if viper-is-on
+            (if (viper-tut-viper-is-on)
                 (if (= part viper-tut--emacs-part)
                     "
  NOTICE: This part of the Viper tutorial runs the Emacs tutorial.
@@ -511,7 +529,7 @@ CHANGED-KEYS should be a list in the format returned by
   NOTICE: You have currently not turned on Viper. Nothing in this
   tutorial \(the Viper Tutorial\) will work unless you do that. ["
               ))
-           (head2 (if viper-is-on
+           (head2 (if (viper-tut-viper-is-on)
                       (get-lang-string tutorial--lang 'tut-chgdhead2)
                     "More information")))
       (when (and head head2)
@@ -522,10 +540,11 @@ CHANGED-KEYS should be a list in the format returned by
                        ;;'tutorial-arg arg
                        'part part
                        'action
-                       (if viper-is-on
+                       (if (viper-tut-viper-is-on)
                            'viper-tut--detailed-help
                          'go-home-blaha)
                        'follow-link t
+                       'echo "Click for more information"
                        'face '(:inherit link :background "yellow"))
         (insert "]\n\n" )
         (when changed-keys
@@ -552,7 +571,7 @@ CHANGED-KEYS should be a list in the format returned by
                     (when (string= "DEL" key-desc)
                       (setq key-desc "Delback"))
                     (while (if (not vi-char)
-                               (progn
+                               (unless hit ;; Only tell once
                                  (setq hit t)
                                  (re-search-forward
                                   (concat "[^[:alpha:]]\\("
@@ -564,7 +583,7 @@ CHANGED-KEYS should be a list in the format returned by
                       (if (not vi-char)
                           (put-text-property (match-beginning 0)
                                              (match-end 0)
-                                             'tutorial-remark 'only-colored)
+                                             'tutorial-remark nil) ;;'only-colored)
                         (put-text-property (match-beginning 0)
                                            (match-end 0)
                                            'face '(:background "yellow"))
@@ -579,10 +598,12 @@ CHANGED-KEYS should be a list in the format returned by
                               (s2 (get-lang-string tutorial--lang 'tut-chgdkey2))
                               (start (point))
                               end)
-                          ;;(concat "** The key " key-desc " has been rebound, but you can use " where " instead ["))
+                          ;; key-desc " has been rebound, but you can use " where " instead ["))
                           (when (and s s2)
+                            (when (or (not where) (= 0 (length where)))
+                              (setq where (concat "`M-x " def-fun-txt "'")))
                             (setq s (format s key-desc where s2))
-                            (insert s)
+                            (insert s " [")
                             (insert-button s2
                                            'tutorial-buffer
                                            (current-buffer)
@@ -627,13 +648,13 @@ CHANGED-KEYS should be a list in the format returned by
 (defun viper-tut--at-change-state()
   (condition-case err
       (progn
-        (save-excursion
-          (let ((inhibit-read-only t))
-            ;; Delete the remarks:
-            (tutorial--remove-remarks)
-            ;; Add them again
-            (viper-tut--add-remarks)
-            )
+        (let ((inhibit-read-only t)
+              (here (point)))
+          ;; Delete the remarks:
+          ;;(tutorial--remove-remarks)
+          ;; Add them again
+          ;;(viper-tut--add-remarks)
+          (goto-char here)
           )
         )
     (error (message "error in viper-tut--at-change-state: %s" (error-message-string err)))))
@@ -642,35 +663,47 @@ CHANGED-KEYS should be a list in the format returned by
 ;;;###autoload
 (defun viper-tutorial(part &optional dont-ask-for-revert)
   "Run a tutorial for Viper.
-If any of the standard Viper key bindings that are used in the
-tutorial have been changed then an explanatory note about this is
-shown in the beginning of the tutorial buffer.
 
-When the tutorial buffer is killed the content and the point
-position in the buffer is saved so that the tutorial may be
-resumed later."
+A simple classic tutorial in 5 parts that have been used by many
+people starting to learn vi keys.  You may learn enough to start
+using `viper-mode' in Emacs.
+
+Some people find that vi keys helps against repetetive strain
+injury, see URL
+
+  `http://www.emacswiki.org/emacs/RepeatedStrainInjury'.
+
+Note: There might be a few clashes between vi key binding and
+Emacs standard key bindings.  You will be notified about those in
+the tutorial.  Even more, if your own key bindings comes in
+between you will be notified about that too."
   (interactive (list
-;;                 (condition-case nil
-;;                     (widget-choose "The following viper tutorials are available"
-;;                                    (mapcar (lambda(rec)
-;;                                              (cons (nth 2 rec) (nth 0 rec)))
-;;                                            viper-tut--parts))
-;;                   (error nil))
+                ;;                 (condition-case nil
+                ;;                     (widget-choose "The following viper tutorials are available"
+                ;;                                    (mapcar (lambda(rec)
+                ;;                                              (cons (nth 2 rec) (nth 0 rec)))
+                ;;                                            viper-tut--parts))
+                ;;                   (error nil))
                 0
                 ))
   (if (not (boundp 'viper-current-state))
       (let ((prompt
              "
-  You can not run the Viper tutorial because you have
-  not enabled Viper.
+  You can not run the Viper tutorial in this Emacs because you
+  have not enabled Viper.
 
-  Do you want to enable Viper and then run the Viper tutorial? "))
+  Do you want to run the Viper tutorial in a new Emacs? "))
         (if (y-or-n-p prompt)
-            (progn
-              (message "")
-              (viper-mode)
-              (viper-tutorial 0))
-          (message "Tutorial aborted by user")))
+            (let ((ret (funcall 'emacs--no-desktop
+                                "-eval"
+                                (concat
+                                 "(progn"
+                                 " (setq viper-mode t)"
+                                 " (require 'viper)"
+                                 " (require 'viper-tut)"
+                                 " (call-interactively 'viper-tutorial))"))))
+              (message "Starting Viper tutorial in a new Emacs"))
+          (message "Viper tutorial aborted by user")))
 
     (let* ((filename (viper-tut--file part))
            ;; Choose a buffer name including the language so that
@@ -686,8 +719,7 @@ resumed later."
                              (= part old-tut-part)
                              (not (buffer-modified-p old-tut-buf)))))
            old-tut-file
-           (old-tut-point 1)
-           viper-is-on)
+           (old-tut-point 1))
       (unless (file-exists-p filename) (error "Can't fine %s" filename))
       (setq tutorial--point-after-chkeys (point-min))
       ;; Try to display the tutorial buffer before asking to revert it.
@@ -701,7 +733,7 @@ resumed later."
         (when old-tut-buf
           (switch-to-buffer old-tut-buf)))
       ;; Use whole frame for tutorial
-      (delete-other-windows)
+      ;;(delete-other-windows)
       ;; If the tutorial buffer has been changed then ask if it should
       ;; be reverted:
       (when (and old-tut-buf
@@ -716,11 +748,11 @@ resumed later."
       (unless old-tut-is-ok
         (switch-to-buffer (get-buffer-create tut-buf-name))
         (unless old-tut-buf (text-mode))
-        (setq viper-is-on (boundp 'viper-mode-string))
         (setq viper-tut--part part)
         (setq old-tut-file (file-exists-p (viper-tut--saved-file)))
         (when (= part 0) (setq old-tut-file nil)) ;; You do not edit in the intro
-        (let ((inhibit-read-only t))
+        (setq buffer-read-only nil)
+        (let ((inhibit-read-only t)) ;; For the text property
           (erase-buffer))
         (message "Preparing Viper tutorial ...") (sit-for 0)
 
@@ -762,7 +794,8 @@ resumed later."
           (save-excursion
             (goto-char (point-min))
             (while (re-search-forward "'\\([][+a-zA-Z~<>!;,:.'\"%/?(){}$^0|-]\\)'" nil t)
-              (let ((matched-char (match-string 1)))
+              (let ((matched-char (match-string 1))
+                    (inhibit-read-only t))
                 (put-text-property 0 1 'vi-char t matched-char)
                 (put-text-property 0 1 'face '(:foreground "blue") matched-char)
                 (replace-match matched-char))))
@@ -782,12 +815,16 @@ resumed later."
               (setq old-point 1))
             (goto-char old-point)))
 
+        (viper-tut-fix-header-and-footer)
+
         ;; Clear message:
         (message "") (sit-for 0)
 
         (setq buffer-undo-list nil)
-        (set-buffer-modified-p nil)))))
+        (set-buffer-modified-p nil))
+      (setq buffer-read-only (= 0 part)))))
 
+;;(tutorial--find-changed-keys '((scroll-up [?\C-v])))
 (defun viper-tut--add-remarks()
   ;; Check if there are key bindings that may disturb the
   ;; tutorial.  If so tell the user.
@@ -806,17 +843,20 @@ resumed later."
         (add-hook 'viper-emacs-state-hook 'viper-tut--at-change-state nil t)
         )
     (remove-hook 'viper-vi-state-hook 'viper-tut--at-change-state t)
-    (remove-hook 'viper-insert-state-hook 'viper-tut--at-change-state t)
+    (remove-hook 'viper-insert-statehook 'viper-tut--at-change-state t)
     (remove-hook 'viper-replace-state-hook 'viper-tut--at-change-state t)
     (remove-hook 'viper-emacs-state-hook 'viper-tut--at-change-state t)
-    )
+    ))
 
+(defun viper-tut-fix-header-and-footer ()
   (save-excursion
+    (goto-char (point-min))
+    (add-text-properties (point) (1+ (line-end-position))
+                         '( read-only t face viper-tut-header))
     (goto-char (point-min))
     (viper-tut--insert-goto-row nil)
     (goto-char (point-max))
-    (viper-tut--insert-goto-row t))
-  )
+    (viper-tut--insert-goto-row t)))
 
 (defun viper-tut--insert-goto-row(last)
   (let ((start (point))
@@ -829,17 +869,15 @@ resumed later."
         (if (= n viper-tut--part)
             (insert (format "%s" n))
           (insert-button (format "%s" n)
-                         'help-echo title
+                         'help-echo (concat "Go to part: " title)
                          'follow-link t
                          'action
-                         (lambda (button)
-                           (let ((part (button-get button 'part)))
-                             (viper-tutorial part t)))
-                         'part n))
+                         `(lambda (button)
+                            (viper-tutorial ,n t))))
         (insert "  ")))
     (insert "   ")
     (insert-button "Exit Tutorial"
-                   'help-echo "Close tutorial buffer"
+                   'help-echo "Exit tutorial and close tutorial buffer"
                    'follow-link t
                    'action
                    (lambda (button)
@@ -849,7 +887,7 @@ resumed later."
     (put-text-property start end 'local-map tutorial--tab-map)
     (put-text-property start end 'tutorial-remark t)
     (put-text-property start end
-                       'face '(:background "yellow" :foreground "#c00"))
+                       'face 'viper-tut-header-top)
     (put-text-property start end 'read-only t)))
 
 (defun viper-tut--replace-links()
@@ -866,7 +904,8 @@ resumed later."
                                 "KEYBOARD-MACROS"
                                 "VIPER-TOGGLE-KEY"
                                 "* EMACS-NOTICE:")))
-        (case-fold-search nil))
+        (case-fold-search nil)
+        (inhibit-read-only t))
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward re-links nil t)
@@ -920,7 +959,9 @@ resumed later."
             (put-text-property start (point)
                                'face '(:background
                                        "#ffe4b5"
-                                       :foreground "#999999")))
+                                       :foreground "#999999"))
+            (put-text-property start (point) 'read-only t)
+            )
            ((string= matched "SEARCH-COMMANDS")
             (insert-button "search commands"
                            'action

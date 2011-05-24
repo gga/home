@@ -44,6 +44,8 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'nxhtml-menu nil t))
+
 (require 'sendmail)
 
 ;;(require 'emacsbug)
@@ -153,7 +155,7 @@
         (fill-region here (point))
         (setq here (point))
         )
-      (print-help-return-message))))
+      (with-no-warnings (print-help-return-message)))))
 
 (defun nxhtml-report-bug-by-mail (topic)
   "Report a bug by mail.

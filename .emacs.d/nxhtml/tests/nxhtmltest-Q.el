@@ -44,9 +44,17 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+(eval-when-compile (require 'ourcomments-util))
 
-(defvar nxhtmltest-bin-Q
-  (file-name-directory (if load-file-name load-file-name buffer-file-name)))
+(eval-and-compile
+  (defvar nxhtmltest-bin-Q
+    (file-name-directory (or load-file-name
+                             (when 'bytecomp-filename bytecomp-filename)
+                             buffer-file-name)))
+
+  (add-to-list 'load-path nxhtmltest-bin-Q)
+  (require 'nxhtmltest-helpers))
 
 ;;;###autoload
 (defun nxhtmltest-run-Q ()
@@ -78,16 +86,21 @@ See `nxhtmltest-run' for more information about the tests."
                 "\" load-path)")))
     (with-current-buffer temp-eval-buf
       (save-buffer))
+    (kill-buffer temp-eval-buf)
     (unless (file-exists-p nxhtmltest-bin-Q)
       (error "Can't find directory %s" nxhtmltest-bin-Q))
+    (setq nxhtmltest-bin-Q (file-name-sans-extension nxhtmltest-bin-Q))
     (unless (file-exists-p test-el)
       (error "Can't find file %s" test-el))
+    (setq test-el (file-name-sans-extension test-el))
     (unless (file-exists-p nxhtml-auto-start)
       (error "Can't find file %s" nxhtml-auto-start))
+    (setq nxhtml-auto-start (file-name-sans-extension nxhtml-auto-start))
     (message "nxhtmltest-bin-Q=%s" nxhtmltest-bin-Q)
     (message "nxhtml-auto-start=%s" nxhtml-auto-start)
     (setenv "nxhtmltest-run-Q" "run")
-    (message "After set nxhtmltest-run-Q=%s" (getenv "nxhtmltest-run-Q"))
+    (message "After setenv nxhtmltest-run-Q=%s" (getenv "nxhtmltest-run-Q"))
+    (message "(ourcomments-find-emacs) => %s" (ourcomments-find-emacs))
     (call-process (ourcomments-find-emacs) nil 0 nil "-Q"
                   "-l" temp-eval-file
                   "-l" nxhtml-auto-start

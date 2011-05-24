@@ -1,8 +1,6 @@
 ;;; html-chklnk.el --- Check links in local HTML sites
-
-;; Copyright (C) 2005 by Lennart Borgman
-
-;; Author:  Lennart Borgman <lennart DOT borgman DOT 073 AT student DOT lu DOT se>
+;;
+;; Author: Lennart Borgman (lennart O borgman A gmail O com)
 ;; Created: Wed Mar 15 14:46:17 2006
 (defconst html-chklnk:version "0.2") ;; Version:
 ;; Last-Updated: Tue Apr 10 04:12:32 2007 (7200 +0200)
@@ -47,16 +45,20 @@
 
 (eval-when-compile (add-to-list 'load-path default-directory load-path))
 (eval-when-compile
-  (let ((load-path load-path)
-        (this-dir (file-name-directory
-                   (if load-file-name load-file-name buffer-file-name))))
-    (add-to-list 'load-path (expand-file-name "../../lisp" this-dir))
-    (require 'w32shell nil t)))
+  (when (> emacs-major-version 22)
+    (let* ((load-path load-path)
+           (this-file (or load-file-name
+                          (when (boundp 'bytecomp-filename) bytecomp-filename)
+                          buffer-file-name))
+           (this-dir (file-name-directory this-file)))
+      (add-to-list 'load-path (expand-file-name "../../lisp" this-dir))
+      (require 'w32shell nil t))))
 
 
-(require 'html-site)
+(eval-when-compile (require 'html-site nil t))
 (require 'compile)
 
+;;;###autoload
 (defgroup html-chklnk nil
   "Customization group for html-chklnk."
   :group 'nxhtml)
