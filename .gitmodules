@@ -1,0 +1,3 @@
+[submodule ".emacs.d/feature-mode"]
+	path = .emacs.d/feature-mode
+	url = https://github.com/michaelklishin/cucumber.el.git
