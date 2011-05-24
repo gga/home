@@ -12,31 +12,39 @@
 (if (eq system-type 'berkeley-unix)
     (load "~/.emacs.d/freebsd.el"))
 
+;; Stupid emacs is stupid
+(setq mac-option-key-is-meta nil)
+(setq mac-command-key-is-meta t)
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier nil)
+(setq make-backup-files nil)
+
 (require 'ido)
 (ido-mode t)
 
-;; Load path extensions for scala-mode
 (add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0")
 (add-to-list 'load-path "~/.emacs.d/scala")
 (add-to-list 'load-path "~/.emacs.d/jump")
 (add-to-list 'load-path "~/.emacs.d/ruby")
-(add-to-list 'load-path "~/.emacs.d/rinari")
-(add-to-list 'load-path "~/.emacs.d/weblogger")
 (add-to-list 'load-path "~/.emacs.d/yasnippet-0.2.2")
-;; (add-to-list 'load-path "~/.emacs.d/bbdb-2.35/lisp")
-;; (add-to-list 'load-path "~/.emacs.d/nxml-mode-20041004")
+(add-to-list 'load-path "~/.emacs.d/feature-mode")
+(add-to-list 'load-path "~/.emacs.d/clojure-mode")
+(add-to-list 'load-path "~/.emacs.d/slime")
 ;; Load Ruby libraries
 (load-library "ruby-mode")
 (load-library "inf-ruby")
 (load-library "rubydb3x")
 (load "~/.emacs.d/nxhtml/autostart.el")
-;; Load a simple wiki library
-(load-library "~/.emacs.d/simple-wiki.el")
 ;; Load flyspell
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 ;; Load nXml mode
 ;; (load "rng-auto.el")
+;; Load js2 mode for improved javascript
+(autoload 'js2-mode "js2" nil t)
+
+;; Turn on linum-mode for every visited file
+(add-hook 'find-file-hook 'linum-mode)
 
 (require 'cl)
 (require 'dired)
@@ -45,15 +53,31 @@
 (require 'cc-mode)
 (require 'scala-mode-auto)
 (require 'ruby-mode)
-(require 'rinari)
-(require 'weblogger)
 (require 'parenface)
 (require 'yasnippet)
 (require 'todochiku)
 (require 'puppet-mode)
-;; (require 'bbdb)
+(require 'feature-mode)
+(require 'linum)
 
-(autoload 'simple-confluence-mode "simple-wiki")
+;; Clojure and Slime setup
+(require 'clojure-mode)
+(eval-after-load "slime"
+  '(progn (slime-setup '(slime-repl))
+	  (setq slime-protocol-version 'ignore)))
+(require 'slime)
+(slime-setup)
+
+(defun save-buffer-if-visiting-file (&optional args)
+  "Save the current buffer only if it is visiting a file"
+  (interactive)
+  (if (and (buffer-file-name) (buffer-modified-p))
+      (save-buffer args)))
+(add-hook 'auto-save-hook 'save-buffer-if-visiting-file)
+;; And run auto-save frequently enough to be interesting
+(setq auto-save-interval 1)
+
+(autoload 'markdown-mode "markdown-mode.el" "Major mode for editing Markdown files" t)
 
 ;; Set up my preferred color theme
 (color-theme-initialize)
@@ -72,16 +96,7 @@
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'message-mode-hook 'turn-on-flyspell)
 
-;; BBDB config
-;; (bbdb-initialize 'gnus 'message)
-;; (setq bbdb-north-american-phone-numbers-p nil)
-
-;; Gnus Mail config
-;; (defun ga-message-mode-hook ()
-;;   (define-key message-mode-map [C-tab] 'bbdb-complete-name))
-;; (add-hook 'message-mode-hook 'ga-message-mode-hook)
-
-(setq tab-width 4)
+(setq tab-width 2)
 (setq indent-tabs-mode nil)
 (setq visible-bell t)
 
@@ -96,6 +111,15 @@
        (skip-syntax-forward "w_")
        (point)))))
 (define-key isearch-mode-map (kbd "C-x") 'ga/isearch-yank-current-word)
+
+;; Improved killing:
+(defun ga/kill-entire-current-line ()
+  "Kills the entire current line."
+  (interactive)
+  (save-excursion
+    (move-beginning-of-line nil)
+    (kill-line 1)))
+(global-set-key "\C-xj" 'ga/kill-entire-current-line)
 
 ;; I only use vertical splits to display two windows of code next to each other,
 ;; typically those two windows will be each wide enough to display most lines, so
@@ -137,20 +161,6 @@
 (set-face-attribute 'font-lock-comment-face
 		    t
 		    :foreground "lime green")
-(set-face-attribute 'message-separator
-		    t
-		    :foreground "DodgerBlue3")
-;; (custom-set-faces
-;;   ;; custom-set-faces was added by Custom.
-;;   ;; If you edit it by hand, you could mess it up, so be careful.
-;;   ;; Your init file should contain only one such instance.
-;;   ;; If there is more than one, they won't work right.
-;;  '(default ((t (:stipple nil :background "Grey15" :foreground "Grey" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 80 :width normal :family "consolas"))))
-;;  '(dired-directory ((t (:foreground "deep sky blue"))))
-;;  '(dired-ignored ((t (:inherit shadow :foreground "grey30"))))
-;;  '(font-lock-comment-delimiter-face ((t (:foreground "lime green"))))
-;;  '(font-lock-comment-face ((t (:foreground "lime green"))))
-;;  '(message-separator ((t (:foreground "DodgerBlue3")))))
 
 ;; Make the TAB key indent if at the beginning of a line, or perform an expansion
 ;; everywhere else
@@ -164,6 +174,16 @@
     (indent-according-to-mode)))
 (defun ga-tab-fix ()
   (local-set-key [tab] 'indent-or-expand))
+
+(defun duplicate-line ()
+  (interactive)
+  (save-excursion
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank)))
 
 ;; Get rid of extraneous and useless UI elements
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -189,15 +209,6 @@ one extra step. Works with: arglist-cont."
     (if (looking-at "^namespace\\W*$")
 	c-basic-offset
       nil)))
-
-;; C++ coding standards customisations for the printer software team
-(defun ga-printer-software-coding-standard ()
-  (c-set-style "stroustrup")
-  (setq tab-width 4)
-  (setq c-basic-offset tab-width)
-  (c-set-offset 'innamespace 0)
-  (c-set-offset 'inline-open 0)
-  (setq indent-tabs-mode nil))
 
 ;; C++ coding standards customisations for the Netpage team
 (defun ga-netpage-coding-standard ()
@@ -252,6 +263,17 @@ one extra step. Works with: arglist-cont."
 	      (find-file inc-file)
 	    (find-file-other-window inc-file))))))
 
+(defun ga-visit-require-file (&optional in-other-window)
+  "Visits the file require'd on the current line."
+  (interactive "P")
+  (save-excursion
+    (move-beginning-of-line 1)
+    (if (looking-at "require '\\([a-zA-Z_./]*\\)'")
+	(let ((req-file (concat (file-name-directory (buffer-file-name)) "/" (match-string 1) ".rb")))
+	  (if (not in-other-window)
+	      (find-file req-file)
+	    (find-file-other-window req-file))))))
+
 (defun ga-create-define-name (name)
   (let ((f-name (substring name (length (ga-source-root)))))
     (let ((s-name (replace-in-string f-name "/" "__")))
@@ -290,17 +312,12 @@ one extra step. Works with: arglist-cont."
 (global-set-key [f5] 'call-last-kbd-macro)
 (global-set-key [f6] 'compile)
 (global-set-key [f7] 'recompile)
-(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-x\M-k" 'duplicate-line)
 ;; Window movement keys: provides quick jumping between many open windows
 (global-set-key [(meta left)] 'windmove-left)
 (global-set-key [(meta right)] 'windmove-right)
 (global-set-key [(meta up)] 'windmove-up)
 (global-set-key [(meta down)] 'windmove-down)
-
-;; Treat Jamfiles as Makefiles, mainly to get them out of Fundamental mode
-(add-to-list 'auto-mode-alist '("[Jj]amfile\\'" . makefile-mode))
-;; Treat *.hammer files as Scala
-(add-to-list 'auto-mode-alist '("\\.hammer\\'" . scala-mode))
 
 (defun remove-string-from-buffer (str)
   "Removes all occurences of the string STR from the current buffer."
@@ -310,15 +327,16 @@ one extra step. Works with: arglist-cont."
     (replace-string str "")))
 
 ;; Ruby mode configuration
-(add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.rb\\'" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.rake\\'" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile\\'" . ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 (defun ga-ruby-mode-hook ()
   (inf-ruby-keys)
   (setq tab-width 2)
   (setq ruby-indent-level tab-width)
   (define-key ruby-mode-map [C-tab] 'yas/expand)
+  (define-key ruby-mode-map "\C-c\C-i" 'ga-visit-require-file)
   (flyspell-prog-mode))
 (add-hook 'ruby-mode-hook 'ga-ruby-mode-hook)
 
@@ -329,7 +347,6 @@ one extra step. Works with: arglist-cont."
 ;; nXHtml mode configuration
 (setq
  nxhtml-global-minor-mode t
- mumamo-chunk-coloring 'submode-colored
  nxhtml-skip-welcome t
  indent-region-mode t
  rng-nxml-auto-validate-flag nil
@@ -338,28 +355,29 @@ one extra step. Works with: arglist-cont."
 (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo))
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
 
+;; Treat feature files as cucumbers
+(add-to-list 'auto-mode-alist '("\.feature\\'" . feature-mode))
+
 ;; Puppet mode configuration
-(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
+(add-to-list 'auto-mode-alist '("\\.pp\\'" . puppet-mode))
+
+;; JS2 mode (for javascript) configuration
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+;; Use markdown mode
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;; Run the emacs in-process server to accept remote-edit requests
 (server-start)
 
-;;(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-;; '(default ((t (:stipple nil :background "Grey15" :foreground "Grey" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 80 :width normal :family "consolas"))))
-;; '(dired-directory ((t (:foreground "deep sky blue"))))
-;; '(dired-ignored ((t (:inherit shadow :foreground "grey30"))))
-;; '(font-lock-comment-delimiter-face ((t (:foreground "lime green"))))
-;; '(font-lock-comment-face ((t (:foreground "lime green"))))
-;; '(message-separator ((t (:foreground "DodgerBlue3")))))
-
 (put 'upcase-region 'disabled nil)
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- )
+
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
+(when
+    (load
+     (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))

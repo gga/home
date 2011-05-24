@@ -3,3 +3,9 @@
 	email = giles.alexander@gmail.com
 [core]
 	excludesfile = /Users/galexand/.gitexcludes
+
+[alias]
+	co = checkout
+	ci = commit
+	st = status
+	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short

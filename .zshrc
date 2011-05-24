@@ -15,14 +15,22 @@ unsetopt beep
 bindkey -e
  # End of lines configured by zsh-newuser-install
 
-export PS1="(%m:%~)[%h]
-$ "
+autoload -U colors && colors
+export PS1="%{$fg_bold[yellow]%}(%m:%~)[%h]
+$ %{$reset_color%}"
 
 function ws () { cd $(ruby $NETPAGE_TOOLS/ws.rb $@); }
 function wsp () { ruby $NETPAGE_TOOLS/ws.rb $@ }
 function pman () { $HOME/bin/pman.sh $@ }
 
+# Clojure configuration
+export CLOJURE_EXT=~/.clojure
+export PATH=$PATH:~/dev/github/clojure-contrib/launchers/bash
+
 # Aliases
 alias ls='ls -lFGH'
 alias man=pman
 alias ec=emacsclient
+alias clj=clj-env-dir
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"  # This loads RVM into a shell session.

@@ -1,9 +1,6 @@
 export LC_CTYPE=en_US.UTF-8
 export EDITOR='emacsclient'
 
-export P4PORT=faith:1666
-export P4CONFIG=.p4rc
-
 export P4CHECK_PRUNE=".rb~ .yml~ .xml~ .properties~ .log .css .DS_Store .haml~ .erb~ .feature~ .xsd~"
 export P4MERGE=/Applications/Utilities/p4merge.app/Contents/MacOS/p4merge
 
@@ -31,8 +28,5 @@ case "$OSTYPE" in
 esac
 
 export WS_ROOT=$DEV_ROOT/ws
-export NETPAGE_TOOLS=$WS_ROOT/tools/main/a/tools/bin
 
-export NNTPSERVER='sbr-news'
-
-PATH=/opt/local/bin:$PATH:/usr/local/bin:$NETPAGE_TOOLS:$NETPAGE_TOOLS/freebsd:$PATH_ADDITIONS
+PATH=/Users/galexand/bin:/opt/local/bin:/opt/local/lib/postgresql83/bin:$PATH:/usr/local/bin:$PATH_ADDITIONS
