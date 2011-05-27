@@ -29,4 +29,4 @@ esac
 
 export WS_ROOT=$DEV_ROOT/ws
 
-PATH=/Users/galexand/bin:/opt/local/bin:/opt/local/lib/postgresql83/bin:$PATH:/usr/local/bin:$PATH_ADDITIONS
+PATH=/Users/galexand/bin:/usr/local/bin:$PATH:$PATH_ADDITIONS
