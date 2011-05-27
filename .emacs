@@ -43,6 +43,7 @@
 
 ;; Turn on linum-mode for every visited file
 (add-hook 'find-file-hook 'linum-mode)
+(setq linum-offset t)
 
 (require 'cl)
 (require 'dired)

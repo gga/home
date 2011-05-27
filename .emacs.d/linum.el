@@ -72,6 +72,12 @@ and you have to scroll or press C-l to update the numbers."
   :group 'linum
   :type 'boolean)
 
+(defcustom linum-offset nil
+  "Whether line numbers should be an offset from point or
+absolute within the buffer."
+  :group 'linum
+  :type 'boolean)
+
 ;;;###autoload
 (define-minor-mode linum-mode
   "Toggle display of line numbers in the left marginal area."
@@ -146,9 +152,10 @@ and you have to scroll or press C-l to update the numbers."
     ;; line visible in this window, if necessary.
     (while (and (not (eobp)) (<= (point) limit))
       (let* ((offset-line (- line start-line))
+	     (line-number (if linum-offset offset-line line))
 	     (str (if fmt
-                      (propertize (format fmt offset-line) 'face 'linum)
-                    (funcall linum-format offset-line)))
+                      (propertize (format fmt line-number) 'face 'linum)
+                    (funcall linum-format line-number)))
              (visited (catch 'visited
                         (dolist (o (overlays-in (point) (point)))
                           (when (string= (overlay-get o 'linum-str) str)
