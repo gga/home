@@ -355,6 +355,20 @@ one extra step. Works with: arglist-cont."
 (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
 
 ;; Treat feature files as cucumbers
+(defun ga/feature-next-scenario ()
+  (interactive)
+  (if (looking-at "Scenario")
+      (move-end-of-line 1))
+  (search-forward "Scenario:" (point-max) "end")
+  (beginning-of-line-text))
+(defun ga/feature-prev-scenario ()
+  (interactive)
+  (search-backward "Scenario:" (point-min) "end")
+  (beginning-of-line-text))
+(defun ga/feature-mode-hook ()
+  (define-key feature-mode-map "\M-n" 'ga/feature-next-scenario)
+  (define-key feature-mode-map "\M-p" 'ga/feature-prev-scenario))
+(add-hook 'feature-mode-hook 'ga/feature-mode-hook)
 (add-to-list 'auto-mode-alist '("\.feature\\'" . feature-mode))
 
 ;; Puppet mode configuration
@@ -362,6 +376,10 @@ one extra step. Works with: arglist-cont."
 
 ;; JS2 mode (for javascript) configuration
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(defun ga-js2-mode-hook ()
+  (setq tab-width 2)
+  (setq indent-tabs-mode nil))
+(add-hook 'js2-mode-hook 'ga-js2-mode-hook)
 
 ;; Use markdown mode
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
