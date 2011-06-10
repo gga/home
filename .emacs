@@ -131,6 +131,8 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(tab-width 2)
+ '(indent-tabs-mode nil)
  '(canlock-password "fc42db0a3ede323f9d0f2ac4768d0f88d055a790")
  '(column-number-mode t)
  '(cua-mode t nil (cua-base))
@@ -140,7 +142,10 @@
  '(whitespace-check-trailing-whitespace nil)
  '(whitespace-check-buffer-trailing nil)
  '(whitespace-global-mode t)
- '(windmove-wrap-around t))
+ '(windmove-wrap-around t)
+ '(js2-basic-offset 2)
+ '(js2-bounce-indent-p t)
+ '(js2-global-externs '(emb))
 (winner-mode 1)
 
 ;; Adjustments to the font lock colouring. Made manually rather than

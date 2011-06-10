@@ -1,0 +1,5 @@
+#name: When step
+# --
+When /^${1:Some event}"([^"]*)"${2:second clause}$/ do |${3:field}|
+  $0
+end
