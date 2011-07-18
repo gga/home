@@ -24,6 +24,7 @@
 
 (add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0")
+(add-to-list 'load-path "~/.emacs.d/emacs-color-theme-solarized")
 (add-to-list 'load-path "~/.emacs.d/scala")
 (add-to-list 'load-path "~/.emacs.d/jump")
 (add-to-list 'load-path "~/.emacs.d/ruby")
@@ -49,6 +50,7 @@
 (require 'dired)
 (require 'uniquify)
 (require 'color-theme)
+(require 'color-theme-solarized)
 (require 'cc-mode)
 (require 'scala-mode-auto)
 (require 'ruby-mode)
@@ -81,7 +83,8 @@
 
 ;; Set up my preferred color theme
 (color-theme-initialize)
-(color-theme-charcoal-black)
+;; (color-theme-charcoal-black)
+(color-theme-solarized-dark)
 
 (setq user-mail-address "giles.alexander@thoughtworks.com")
 
@@ -160,18 +163,18 @@
 		    t
 		    :family ga-plt-font
 		    :height ga-plt-font-size)
-(set-face-attribute 'dired-directory
-		    t
-		    :foreground "deep sky blue")
-(set-face-attribute 'dired-ignored
-		    t
-		    :foreground "grey30")
-(set-face-attribute 'font-lock-comment-delimiter-face
-		    t
-		    :foreground "lime green")
-(set-face-attribute 'font-lock-comment-face
-		    t
-		    :foreground "lime green")
+;; (set-face-attribute 'dired-directory
+;; 		    t
+;; 		    :foreground "deep sky blue")
+;; (set-face-attribute 'dired-ignored
+;; 		    t
+;; 		    :foreground "grey30")
+;; (set-face-attribute 'font-lock-comment-delimiter-face
+;; 		    t
+;; 		    :foreground "lime green")
+;; (set-face-attribute 'font-lock-comment-face
+;; 		    t
+;; 		    :foreground "lime green")
 
 ;; Make the TAB key indent if at the beginning of a line, or perform an expansion
 ;; everywhere else
