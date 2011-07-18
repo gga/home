@@ -100,6 +100,12 @@
 (setq indent-tabs-mode nil)
 (setq visible-bell t)
 
+;; Ack config
+(autoload 'ack-same "full-ack" nil t)
+(autoload 'ack "full-ack" nil t)
+(autoload 'ack-find-same-file "full-ack" nil t)
+(autoload 'ack-find-file "full-ack" nil t)
+
 ;; Improved searching:
 (defun ga/isearch-yank-current-word ()
   "Pull current word from buffer into search string."
