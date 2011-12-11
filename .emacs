@@ -38,11 +38,13 @@
 (load-library "ruby-mode")
 (load-library "inf-ruby")
 (load-library "rubydb3x")
-(load "~/.emacs.d/nxhtml/autostart.el")
+;; (load "~/.emacs.d/nxhtml/autostart.el")
 ;; Load flyspell
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 ;; Load js2 mode for improved javascript
 (autoload 'js2-mode "js2" nil t)
+(autoload 'paredit-mode "paredit"
+  "Minor mode for pseudo-structurally editing Lisp code." t)
 
 ;; Turn on linum-mode for every visited file
 (add-hook 'find-file-hook 'linum-mode)
@@ -74,6 +76,11 @@
 (add-hook 'clojure-mode-hook 'midje-mode)
 (require 'slime)
 (slime-setup)
+(add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
+(add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
+(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
+(add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
+(add-hook 'clojure-mode-hook          (lambda () (paredit-mode +1)))
 
 (defun save-buffer-if-visiting-file (&optional args)
   "Save the current buffer only if it is visiting a file"
@@ -89,7 +96,7 @@
 ;; Set up my preferred color theme
 (color-theme-initialize)
 ;; (color-theme-charcoal-black)
-(color-theme-solarized-dark)
+(color-theme-solarized-light)
 
 (setq user-mail-address "giles.alexander@thoughtworks.com")
 
@@ -364,15 +371,15 @@ one extra step. Works with: arglist-cont."
 (yas/load-directory "~/.emacs.d/yasnippet-0.2.2/snippets/")
 
 ;; nXHtml mode configuration
-(setq
- nxhtml-global-minor-mode t
- nxhtml-skip-welcome t
- indent-region-mode t
- rng-nxml-auto-validate-flag nil
- nxml-degraded t
- nxml-child-indent 2)
-(add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo))
-(add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
+;; (setq
+;;  nxhtml-global-minor-mode t
+;;  nxhtml-skip-welcome t
+;;  indent-region-mode t
+;;  rng-nxml-auto-validate-flag nil
+;;  nxml-degraded t
+;;  nxml-child-indent 2)
+;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo))
+;; (add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
 
 ;; Treat feature files as cucumbers
 (defun ga/feature-next-scenario ()
