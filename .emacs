@@ -404,6 +404,7 @@ one extra step. Works with: arglist-cont."
 ;; JS2 mode (for javascript) configuration
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (defun ga-js2-mode-hook ()
+  (ga-tab-fix)
   (setq tab-width 2)
   (setq indent-tabs-mode nil))
 (add-hook 'js2-mode-hook 'ga-js2-mode-hook)
