@@ -34,6 +34,7 @@
 (add-to-list 'load-path "~/.emacs.d/slime")
 (add-to-list 'load-path "~/.emacs.d/midje-mode")
 (add-to-list 'load-path "~/.emacs.d/magit")
+(add-to-list 'load-path "~/.emacs.d/coffee-mode")
 ;; Load Ruby libraries
 (load-library "ruby-mode")
 (load-library "inf-ruby")
@@ -66,6 +67,7 @@
 (require 'feature-mode)
 (require 'linum)
 (require 'magit)
+(require 'coffee-mode)
 
 ;; Clojure and Slime setup
 (require 'clojure-mode)
