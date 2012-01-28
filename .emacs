@@ -347,6 +347,9 @@ one extra step. Works with: arglist-cont."
 (global-set-key [(meta up)] 'windmove-up)
 (global-set-key [(meta down)] 'windmove-down)
 
+;; Global keys to operate with modes
+(global-set-key "\C-xg" 'magit-status)
+
 (defun remove-string-from-buffer (str)
   "Removes all occurences of the string STR from the current buffer."
   (interactive "MRemove string: ")
@@ -410,6 +413,13 @@ one extra step. Works with: arglist-cont."
   (setq tab-width 2)
   (setq indent-tabs-mode nil))
 (add-hook 'js2-mode-hook 'ga-js2-mode-hook)
+
+;; CoffeeScript mode configuration
+(defun ga-coffee-mode-hook ()
+  (ga-tab-fix)
+  (setq tab-width 2)
+  (setq indent-tabs-mode nil))
+(add-hook 'coffee-mode-hook 'ga-coffee-mode-hook)
 
 ;; Use markdown mode
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
