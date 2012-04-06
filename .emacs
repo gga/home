@@ -357,6 +357,23 @@ one extra step. Works with: arglist-cont."
     (goto-char (point-min))
     (replace-string str "")))
 
+;; binding keys to revert buffers
+(defun revert-buffer-no-confirm ()
+  "Revert buffer without confirmation."
+  (interactive) (revert-buffer t t)
+  (message "Current buffer refreshed."))
+(defun revert-all-buffers ()
+  "Refreshes all open buffers from their respective files."
+  (interactive)
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and (buffer-file-name) (not (buffer-modified-p)))
+	(revert-buffer t t t) )))
+  (message "Refreshed open files.") )
+
+(global-set-key "\M-r" 'revert-buffer-no-confirm)
+(global-set-key "\M-R" 'revert-all-buffers)
+
 ;; Ruby mode configuration
 (add-to-list 'auto-mode-alist '("\\.rb\\'" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rake\\'" . ruby-mode))
