@@ -5,3 +5,5 @@ export P4CHECK_PRUNE=".rb~ .yml~ .xml~ .properties~ .log .css .DS_Store .haml~ .
 export P4MERGE=/Applications/Utilities/p4merge.app/Contents/MacOS/p4merge
 
 PATH=/Users/`whoami`/bin:/usr/local/bin:/usr/local/lib/node_modules/npm/bin:$PATH:$PATH_ADDITION
+
+export ANDROID_HOME=/usr/local/Cellar/android-sdk/r16

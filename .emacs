@@ -35,6 +35,7 @@
 (add-to-list 'load-path "~/.emacs.d/midje-mode")
 (add-to-list 'load-path "~/.emacs.d/magit")
 (add-to-list 'load-path "~/.emacs.d/coffee-mode")
+(add-to-list 'load-path "~/.emacs.d/markdown-mode")
 ;; Load Ruby libraries
 (load-library "ruby-mode")
 (load-library "inf-ruby")
@@ -168,7 +169,7 @@
  '(windmove-wrap-around t)
  '(js2-basic-offset 2)
  '(js2-bounce-indent-p t)
- '(js2-global-externs '("emb")))
+ '(js2-global-externs '("emb" "exports")))
 (winner-mode 1)
 
 ;; Adjustments to the font lock colouring. Made manually rather than
@@ -423,6 +424,7 @@ one extra step. Works with: arglist-cont."
 
 ;; Use markdown mode
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 
 ;; Run the emacs in-process server to accept remote-edit requests
 (server-start)

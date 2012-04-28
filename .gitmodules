@@ -17,3 +17,6 @@
 [submodule ".emacs.d/coffee-mode"]
 	path = .emacs.d/coffee-mode
 	url = https://github.com/defunkt/coffee-mode
+[submodule ".emacs.d/markdown-mode"]
+	path = .emacs.d/markdown-mode
+	url = git://jblevins.org/git/markdown-mode.git
