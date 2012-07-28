@@ -32,5 +32,6 @@ alias ls='ls -lFGH'
 alias man=pman
 alias ec=emacsclient
 alias clj=clj-env-dir
+alias be='bundle exec'
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"  # This loads RVM into a shell session.

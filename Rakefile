@@ -1,4 +1,4 @@
-FILES = ['.emacs', '.gitconfig', '.gitexcludes', '.zshenv', '.zshrc', '.hgrc']
+FILES = ['.emacs', '.gitconfig', '.gitexcludes', '.zshenv', '.zshrc', '.hgrc', '.gemrc']
 DIRS = ['.emacs.d', '.zsh.d', '.hg']
 HOME = File.expand_path("~/")
 
