@@ -204,7 +204,7 @@
 (defun ga-tab-fix ()
   (local-set-key [tab] 'indent-or-expand))
 
-(defun duplicate-line ()
+(defun ga/duplicate-line ()
   (interactive)
   (save-excursion
     (move-beginning-of-line 1)
@@ -213,6 +213,7 @@
     (open-line 1)
     (next-line 1)
     (yank)))
+(global-set-key "\C-xl" 'ga/duplicate-line)
 
 ;; Get rid of extraneous and useless UI elements
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))

@@ -23,6 +23,8 @@ function ws () { cd $(ruby $NETPAGE_TOOLS/ws.rb $@); }
 function wsp () { ruby $NETPAGE_TOOLS/ws.rb $@ }
 function pman () { $HOME/bin/pman.sh $@ }
 
+function rbe () { ec -n `gem which $@` }
+
 # Clojure configuration
 export CLOJURE_EXT=~/.clojure
 export PATH=$PATH:~/dev/github/clojure-contrib/launchers/bash
@@ -33,5 +35,9 @@ alias man=pman
 alias ec=emacsclient
 alias clj=clj-env-dir
 alias be='bundle exec'
+alias br='bundle exec rake'
+alias g=git
+alias m=less
+alias rk=rake
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"  # This loads RVM into a shell session.
