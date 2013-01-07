@@ -85,6 +85,9 @@
 (add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
 (add-hook 'clojure-mode-hook          (lambda () (paredit-mode +1)))
 
+;; TAGS config
+(setq tags-revert-without-query 1)
+
 (defun save-buffer-if-visiting-file (&optional args)
   "Save the current buffer only if it is visiting a file"
   (interactive)

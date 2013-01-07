@@ -2,10 +2,20 @@
 	name = Giles Alexander
 	email = giles.alexander@gmail.com
 [core]
-	excludesfile = /Users/galexand/.gitexcludes
+	excludesfile = ~/.gitignore_global
 
 [alias]
 	co = checkout
 	ci = commit
 	st = status
 	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+  pr = pull --rebase
+  pom = push origin master
+
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
