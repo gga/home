@@ -1,12 +1,6 @@
 [submodule ".emacs.d/feature-mode"]
 	path = .emacs.d/feature-mode
 	url = https://github.com/michaelklishin/cucumber.el.git
-[submodule ".emacs.d/clojure-mode"]
-	path = .emacs.d/clojure-mode
-	url = git://github.com/technomancy/clojure-mode.git
-[submodule ".emacs.d/slime"]
-	path = .emacs.d/slime
-	url = git://github.com/nablaone/slime.git
 [submodule ".emacs.d/emacs-color-theme-solarized"]
 	path = .emacs.d/emacs-color-theme-solarized
 	url = https://github.com/sellout/emacs-color-theme-solarized.git
@@ -20,3 +14,6 @@
 [submodule ".emacs.d/markdown-mode"]
 	path = .emacs.d/markdown-mode
 	url = git://jblevins.org/git/markdown-mode.git
+[submodule ".emacs.d/midje-mode"]
+	path = .emacs.d/midje-mode
+	url = https://github.com/dnaumov/midje-mode

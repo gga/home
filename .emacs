@@ -30,12 +30,10 @@
 (add-to-list 'load-path "~/.emacs.d/ruby")
 (add-to-list 'load-path "~/.emacs.d/yasnippet-0.2.2")
 (add-to-list 'load-path "~/.emacs.d/feature-mode")
-(add-to-list 'load-path "~/.emacs.d/clojure-mode")
-(add-to-list 'load-path "~/.emacs.d/slime")
-(add-to-list 'load-path "~/.emacs.d/midje-mode")
 (add-to-list 'load-path "~/.emacs.d/magit")
 (add-to-list 'load-path "~/.emacs.d/coffee-mode")
 (add-to-list 'load-path "~/.emacs.d/markdown-mode")
+(add-to-list 'load-path "~/.emacs.d/midje-mode")
 ;; Load Ruby libraries
 (load-library "ruby-mode")
 (load-library "inf-ruby")
@@ -45,8 +43,25 @@
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 ;; Load js2 mode for improved javascript
 (autoload 'js2-mode "js2" nil t)
-(autoload 'paredit-mode "paredit"
-  "Minor mode for pseudo-structurally editing Lisp code." t)
+
+(require 'package)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
+
+(dolist (p '(clojure-mode
+             nrepl
+             paredit))
+  (unless (package-installed-p p)
+    (package-install p)))
+
+(add-hook 'clojure-mode-hook 'paredit-mode)
+(add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
+(add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
+(add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
+
+(require 'midje-mode)
+(add-hook 'clojure-mode-hook 'midje-mode)
 
 ;; Turn on linum-mode for every visited file
 (add-hook 'find-file-hook 'linum-mode)
@@ -69,21 +84,6 @@
 (require 'linum)
 (require 'magit)
 (require 'coffee-mode)
-
-;; Clojure and Slime setup
-(require 'clojure-mode)
-(eval-after-load "slime"
-  '(progn (slime-setup '(slime-repl))
-	  (setq slime-protocol-version 'ignore)))
-(require 'midje-mode)
-(add-hook 'clojure-mode-hook 'midje-mode)
-(require 'slime)
-(slime-setup)
-(add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
-(add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
-(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
-(add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
-(add-hook 'clojure-mode-hook          (lambda () (paredit-mode +1)))
 
 ;; TAGS config
 (setq tags-revert-without-query 1)
@@ -451,13 +451,3 @@ one extra step. Works with: arglist-cont."
 (server-start)
 
 (put 'upcase-region 'disabled nil)
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
