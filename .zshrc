@@ -37,6 +37,7 @@ alias clj=clj-env-dir
 alias be='bundle exec'
 alias br='bundle exec rake'
 alias g=git
+alias pupu='g pr && g pom'
 alias m=less
 alias rk=rake
 

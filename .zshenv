@@ -9,3 +9,5 @@ PATH=/Users/`whoami`/bin:/usr/local/bin:/usr/local/lib/node_modules/npm/bin:$PAT
 export ANDROID_HOME=/usr/local/Cellar/android-sdk/r16
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+export JAVA_HOME=`/usr/libexec/java_home -v 1.7`

@@ -27,7 +27,7 @@
 (add-to-list 'load-path "~/.emacs.d/emacs-color-theme-solarized")
 (add-to-list 'load-path "~/.emacs.d/scala")
 (add-to-list 'load-path "~/.emacs.d/jump")
-(add-to-list 'load-path "~/.emacs.d/ruby")
+;; (add-to-list 'load-path "~/.emacs.d/ruby")
 (add-to-list 'load-path "~/.emacs.d/yasnippet-0.2.2")
 (add-to-list 'load-path "~/.emacs.d/feature-mode")
 (add-to-list 'load-path "~/.emacs.d/magit")
@@ -35,9 +35,9 @@
 (add-to-list 'load-path "~/.emacs.d/markdown-mode")
 (add-to-list 'load-path "~/.emacs.d/midje-mode")
 ;; Load Ruby libraries
-(load-library "ruby-mode")
-(load-library "inf-ruby")
-(load-library "rubydb3x")
+;; (load-library "ruby-mode")
+;; (load-library "inf-ruby")
+;; (load-library "rubydb3x")
 ;; (load "~/.emacs.d/nxhtml/autostart.el")
 ;; Load flyspell
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
@@ -85,6 +85,10 @@
 (require 'magit)
 (require 'coffee-mode)
 
+;; ediff
+(setq diff-switches "-u"
+      ediff-window-setup-function 'ediff-setup-windows-plain)
+
 ;; TAGS config
 (setq tags-revert-without-query 1)
 
@@ -104,7 +108,18 @@
 ;; (color-theme-charcoal-black)
 (color-theme-solarized-light)
 
-(setq user-mail-address "giles.alexander@thoughtworks.com")
+(defun ga/small-screen ()
+  "Switches settings as appropriate for a small screen"
+  (interactive)
+  (color-theme-solarized-light))
+(defun ga/large-screen ()
+  "Switches settings as appropriate for a large screen"
+  (interactive)
+  (color-theme-solarized-dark))
+(global-set-key "\C-x\M-^" 'ga/small-screen)
+(global-set-key "\C-x\M-&" 'ga/large-screen)
+
+(setq user-mail-address "gga@overwatering.org")
 
 (defun turn-on-flyspell ()
   "Turns on flyspell, guaranteed."
@@ -447,7 +462,13 @@ one extra step. Works with: arglist-cont."
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 
+(defun ga-md-hook ()
+  (auto-fill-mode -1)
+  (visual-line-mode))
+(add-hook 'markdown-mode-hook 'ga-md-hook)
+
 ;; Run the emacs in-process server to accept remote-edit requests
 (server-start)
 
 (put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
