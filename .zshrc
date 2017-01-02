@@ -25,6 +25,9 @@ function pman () { $HOME/bin/pman.sh $@ }
 
 function rbe () { ec -n `gem which $@` }
 
+function d-cfg () { eval "$(docker-machine env docker-vm)" }
+function d-ip () { docker-machine ip docker-vm }
+
 # Clojure configuration
 export CLOJURE_EXT=~/.clojure
 export PATH=$PATH:~/dev/github/clojure-contrib/launchers/bash

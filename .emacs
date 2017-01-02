@@ -33,7 +33,6 @@
 (add-to-list 'load-path "~/.emacs.d/magit")
 (add-to-list 'load-path "~/.emacs.d/coffee-mode")
 (add-to-list 'load-path "~/.emacs.d/markdown-mode")
-(add-to-list 'load-path "~/.emacs.d/midje-mode")
 ;; Load Ruby libraries
 ;; (load-library "ruby-mode")
 ;; (load-library "inf-ruby")
@@ -41,16 +40,23 @@
 ;; (load "~/.emacs.d/nxhtml/autostart.el")
 ;; Load flyspell
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
+(autoload 'typing-of-emacs "typing" "The Typing of Emacs, a game." t)
 ;; Load js2 mode for improved javascript
 (autoload 'js2-mode "js2" nil t)
 
+(require 'ansi-color)
+(defun display-ansi-colors ()
+  (interactive)
+  (ansi-color-apply-on-region (point-min) (point-max)))
+
 (require 'package)
 (add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/")
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
 (dolist (p '(clojure-mode
-             nrepl
+             cider
              paredit))
   (unless (package-installed-p p)
     (package-install p)))
@@ -60,8 +66,11 @@
 (add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
 (add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
 
-(require 'midje-mode)
 (add-hook 'clojure-mode-hook 'midje-mode)
+
+(defun ga-clojure-mode-hook ()
+  (ga-tab-fix))
+(add-hook 'clojure-mode-hook 'ga-clojure-mode-hook)
 
 ;; Turn on linum-mode for every visited file
 (add-hook 'find-file-hook 'linum-mode)
@@ -134,7 +143,7 @@
 
 (setq tab-width 2)
 (setq indent-tabs-mode nil)
-(setq visible-bell t)
+(setq visible-bell nil)
 
 ;; Ack config
 (autoload 'ack-same "full-ack" nil t)
@@ -169,25 +178,26 @@
 (setq truncate-partial-width-windows nil)
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(tab-width 2)
- '(indent-tabs-mode nil)
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(canlock-password "fc42db0a3ede323f9d0f2ac4768d0f88d055a790")
+ '(cider-lein-command "/usr/local/bin/lein")
  '(column-number-mode t)
  '(cua-mode t nil (cua-base))
- '(scroll-bar-mode nil)
- '(transient-mark-mode t)
- '(whitespace-check-leading-whitespace nil)
- '(whitespace-check-trailing-whitespace nil)
- '(whitespace-check-buffer-trailing nil)
- '(whitespace-global-mode t)
- '(windmove-wrap-around t)
+ '(indent-tabs-mode nil)
  '(js2-basic-offset 2)
  '(js2-bounce-indent-p t)
- '(js2-global-externs '("emb" "exports")))
+ '(js2-global-externs (quote ("emb" "exports")))
+ '(scroll-bar-mode nil)
+ '(tab-width 2)
+ '(transient-mark-mode t)
+ '(whitespace-check-buffer-trailing nil)
+ '(whitespace-check-leading-whitespace nil)
+ '(whitespace-check-trailing-whitespace nil)
+ '(whitespace-global-mode t)
+ '(windmove-wrap-around t))
 (winner-mode 1)
 
 ;; Adjustments to the font lock colouring. Made manually rather than
@@ -394,6 +404,10 @@ one extra step. Works with: arglist-cont."
 (global-set-key "\M-r" 'revert-buffer-no-confirm)
 (global-set-key "\M-R" 'revert-all-buffers)
 
+;; Takes a comment containing a chunk of JS code and turns it into readable JS code
+(fset 'comment-to-js
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 134217790 backspace 134217788 134217848 114 101 112 108 97 99 101 45 115 116 114 105 110 103 return 92 110 return 17 10 return 134217788 134217848 114 101 112 108 97 99 101 45 115 114 backspace 116 114 105 110 103 return 92 34 return 34 return 134217788 134217848 106 115 45 backspace 50 45 109 111 100 101 tab return] 0 "%d")) arg)))
+
 ;; Ruby mode configuration
 (add-to-list 'auto-mode-alist '("\\.rb\\'" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rake\\'" . ruby-mode))
@@ -472,3 +486,9 @@ one extra step. Works with: arglist-cont."
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

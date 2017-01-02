@@ -1,3 +1,5 @@
 /.emacs.d/auto-save-list/*
 /.zsh.d/.histfile
 /.emacs.d/elpa/*
+/.emacs.d/typing.el
+/.emacs.d/window-margin.el
