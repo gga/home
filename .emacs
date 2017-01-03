@@ -22,16 +22,12 @@
 (require 'ido)
 (ido-mode t)
 
-(add-to-list 'load-path "~/.emacs.d")
-(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0")
-(add-to-list 'load-path "~/.emacs.d/emacs-color-theme-solarized")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'load-path "~/.emacs.d/scala")
 (add-to-list 'load-path "~/.emacs.d/jump")
 ;; (add-to-list 'load-path "~/.emacs.d/ruby")
 (add-to-list 'load-path "~/.emacs.d/yasnippet-0.2.2")
 (add-to-list 'load-path "~/.emacs.d/feature-mode")
-(add-to-list 'load-path "~/.emacs.d/magit")
-(add-to-list 'load-path "~/.emacs.d/coffee-mode")
 (add-to-list 'load-path "~/.emacs.d/markdown-mode")
 ;; Load Ruby libraries
 ;; (load-library "ruby-mode")
@@ -57,7 +53,12 @@
 
 (dolist (p '(clojure-mode
              cider
-             paredit))
+             paredit
+             color-theme-solarized
+             feature-mode
+             magit
+             coffee-mode
+             haml-mode))
   (unless (package-installed-p p)
     (package-install p)))
 
@@ -79,15 +80,12 @@
 (require 'cl)
 (require 'dired)
 (require 'uniquify)
-(require 'color-theme)
-(require 'color-theme-solarized)
 (require 'cc-mode)
 (require 'scala-mode-auto)
 (require 'ruby-mode)
 (require 'haml-mode)
 (require 'parenface)
 (require 'yasnippet)
-(require 'todochiku)
 (require 'puppet-mode)
 (require 'feature-mode)
 (require 'linum)
@@ -113,9 +111,9 @@
 (autoload 'markdown-mode "markdown-mode.el" "Major mode for editing Markdown files" t)
 
 ;; Set up my preferred color theme
-(color-theme-initialize)
-;; (color-theme-charcoal-black)
-(color-theme-solarized-light)
+(load-theme 'solarized t)
+(set-terminal-parameter nil 'background-mode 'dark)
+(enable-theme 'solarized)
 
 (defun ga/small-screen ()
   "Switches settings as appropriate for a small screen"
