@@ -54,7 +54,6 @@
 (dolist (p '(clojure-mode
              cider
              paredit
-             color-theme-solarized
              feature-mode
              magit
              coffee-mode
@@ -111,9 +110,7 @@
 (autoload 'markdown-mode "markdown-mode.el" "Major mode for editing Markdown files" t)
 
 ;; Set up my preferred color theme
-(load-theme 'solarized t)
-(set-terminal-parameter nil 'background-mode 'dark)
-(enable-theme 'solarized)
+(load-theme 'leuven t)
 
 (defun ga/small-screen ()
   "Switches settings as appropriate for a small screen"
