@@ -37,8 +37,6 @@
 ;; Load flyspell
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 (autoload 'typing-of-emacs "typing" "The Typing of Emacs, a game." t)
-;; Load js2 mode for improved javascript
-(autoload 'js2-mode "js2" nil t)
 
 (require 'ansi-color)
 (defun display-ansi-colors ()
@@ -57,7 +55,8 @@
              feature-mode
              magit
              coffee-mode
-             haml-mode))
+             haml-mode
+             js2-mode))
   (unless (package-installed-p p)
     (package-install p)))
 
@@ -185,6 +184,9 @@
  '(js2-basic-offset 2)
  '(js2-bounce-indent-p t)
  '(js2-global-externs (quote ("emb" "exports")))
+ '(package-selected-packages
+   (quote
+    (js2-mode haml-mode coffee-mode magit feature-mode paredit cider clojure-mode)))
  '(scroll-bar-mode nil)
  '(tab-width 2)
  '(transient-mark-mode t)
