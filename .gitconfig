@@ -1,6 +1,6 @@
 [user]
 	name = Giles Alexander
-	email = giles.alexander@gmail.com
+	email = gga@overwatering.org
 [core]
 	excludesfile = ~/.gitignore_global
 
@@ -12,9 +12,5 @@
   pr = pull --rebase
   pom = push origin master
 
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+[includeIf "gitdir:~/dev/anthemis/"]
+  path = .gitconfig-anthemis
