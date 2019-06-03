@@ -14,3 +14,5 @@
 
 [includeIf "gitdir:~/dev/anthemis/"]
   path = .gitconfig-anthemis
+[diff "sopsdiffer"]
+	textconv = sops -d

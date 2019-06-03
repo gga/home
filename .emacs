@@ -186,7 +186,7 @@
  '(js2-global-externs (quote ("emb" "exports")))
  '(package-selected-packages
    (quote
-    (midje-mode js2-mode haml-mode coffee-mode magit feature-mode paredit cider clojure-mode)))
+    (terraform-mode swift-mode web-mode pug-mode php-mode go-mode markdown-mode markdown-mode+ markdown-preview-eww markdown-preview-mode typescript-mode midje-mode js2-mode haml-mode coffee-mode magit feature-mode paredit cider clojure-mode)))
  '(scroll-bar-mode nil)
  '(tab-width 2)
  '(transient-mark-mode t)

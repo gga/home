@@ -51,3 +51,9 @@ export PATH="/usr/local/heroku/bin:$PATH"
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/galexander/tools/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/galexander/tools/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/galexander/tools/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/galexander/tools/google-cloud-sdk/completion.zsh.inc'; fi
